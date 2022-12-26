@@ -6,5 +6,5 @@ brew install neovim
 ## 2. gitclone
 ### macos
 ```
-git clone https://github.com/Lee-Hyeong-Jin/NeovimConfig.git ~/.config
+git clone https://github.com/Lee-Hyeong-Jin/NeovimConfig.git ~/.config/nvim
 ```
