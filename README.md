@@ -1,6 +1,6 @@
 # My Own NeoVim
 
-##macos
+## macos
 ### 1. neovim 설치
 ```
 brew install neovim
