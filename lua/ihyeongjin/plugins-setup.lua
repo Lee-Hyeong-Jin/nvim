@@ -68,8 +68,9 @@ return packer.startup(function(use)
 	use("rafamadriz/friendly-snippets")
 
 	-- managing & installing lsp servers, linters & formatters
-	use("williamboman/mason.nvim")
+  use("williamboman/mason.nvim")
 	use("williamboman/mason-lspconfig.nvim")
+	use("williamboman/nvim-lsp-installer")
 
 	-- configuring lsp servers
 	use("neovim/nvim-lspconfig")
