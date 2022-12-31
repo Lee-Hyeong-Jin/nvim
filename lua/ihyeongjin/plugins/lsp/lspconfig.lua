@@ -81,6 +81,29 @@ lspconfig["kotlin_language_server"].setup({
 	on_attach = on_attach,
 })
 
+lspconfig["rust_analyzer"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+	settings = {
+		["rust-analyzer"] = {
+			imports = {
+				granularity = {
+					group = "module",
+				},
+				prefix = "self",
+			},
+			cargo = {
+				buildScripts = {
+					enable = true,
+				},
+			},
+			procMacro = {
+				enable = true,
+			},
+		},
+	},
+})
+
 lspconfig["pyright"].setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
@@ -96,29 +119,6 @@ lspconfig["pyright"].setup({
 lspconfig["sqlls"].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
-})
-
-lspconfig["rust_analyzer"].setup({
-  capabilities = capabilities,
-  on_attach=on_attach,
-    settings = {
-        ["rust-analyzer"] = {
-            imports = {
-                granularity = {
-                    group = "module",
-                },
-                prefix = "self",
-            },
-            cargo = {
-                buildScripts = {
-                    enable = true,
-                },
-            },
-            procMacro = {
-                enable = true
-            },
-        }
-    }
 })
 
 local capabilities_cpp = capabilities
