@@ -13,7 +13,6 @@ null_ls.setup({
 		formatting.prettier,
 		formatting.stylua,
 		formatting.autopep8,
-		formatting.clang_format,
 		diagnostics.eslint_d,
 	},
 	-- configure format on save
