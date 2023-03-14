@@ -21,7 +21,6 @@ mason_lspconfig.setup({
 		"html",
 		"cssls",
 		"tailwindcss",
-		"sumneko_lua",
 		"jsonls",
 		"jdtls",
 		"kotlin_language_server",

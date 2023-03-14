@@ -68,20 +68,31 @@ return packer.startup(function(use)
 	use("rafamadriz/friendly-snippets")
 
 	-- managing & installing lsp servers, linters & formatters
-  use("williamboman/mason.nvim")
+	use("williamboman/mason.nvim")
 	use("williamboman/mason-lspconfig.nvim")
 	use("williamboman/nvim-lsp-installer")
 
 	-- configuring lsp servers
 	use("neovim/nvim-lspconfig")
 	use("hrsh7th/cmp-nvim-lsp") -- for autocompletion
-	use({ "glepnir/lspsaga.nvim", branch = "main" }) -- enhanced lsp uis
 	use("jose-elias-alvarez/typescript.nvim") -- additional functionality for typescript server (e.g. rename file & update imports)
 	use("onsails/lspkind.nvim") -- vs-code like icons for autocompletion
 
 	-- formatting & linting
 	use("jose-elias-alvarez/null-ls.nvim")
 	use("jayp0521/mason-null-ls.nvim")
+	use({
+		"glepnir/lspsaga.nvim",
+		branch = "main",
+		config = function()
+			require("lspsaga").setup({})
+		end,
+		requires = {
+			{ "nvim-tree/nvim-web-devicons" },
+			--Please make sure you install markdown and markdown_inline parser
+			{ "nvim-treesitter/nvim-treesitter" },
+		},
+	})
 
 	-- treesitter
 	use({
@@ -99,7 +110,25 @@ return packer.startup(function(use)
 	use("lewis6991/gitsigns.nvim")
 
 	-- dashboard
-	use("glepnir/dashboard-nvim")
+	use({
+		"glepnir/dashboard-nvim",
+		event = "VimEnter",
+		config = function()
+			require("dashboard").setup({
+				-- config
+			})
+		end,
+		requires = { "nvim-tree/nvim-web-devicons" },
+	})
+
+	-- flutter setup
+	use({
+		"akinsho/flutter-tools.nvim",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"stevearc/dressing.nvim", -- optional for vim.ui.select
+		},
+	})
 
 	if packer_bootstrap then
 		require("packer").sync()
