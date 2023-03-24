@@ -13,6 +13,11 @@ if not typescript_setup then
 	return
 end
 
+local lspconfig_util_status, lspconfig_util = pcall(require, "lspconfig/util")
+if not lspconfig_util_status then
+	return
+end
+
 local keymap = vim.keymap
 
 -- enable keybinds for available lsp server
@@ -72,11 +77,6 @@ lspconfig["tailwindcss"].setup({
 })
 
 lspconfig["jsonls"].setup({
-	capabilities = capabilities,
-	on_attach = on_attach,
-})
-
-lspconfig["jdtls"].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
@@ -156,3 +156,16 @@ lspconfig["lua_ls"].setup({
 	},
 })
 
+lspconfig["jdtls"].setup({
+	cmd = { "jdtls" },
+	filetypes = { "java" },
+	root_dir = lspconfig_util.root_pattern(
+		".git",
+		"build.gradle",
+		"pom.xml",
+		"settings.gradle",
+		"build.gradle.kts",
+		"settings.gradle.kts"
+	),
+	single_file_support = true,
+})
