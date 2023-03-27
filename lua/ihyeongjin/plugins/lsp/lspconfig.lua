@@ -159,6 +159,8 @@ lspconfig["lua_ls"].setup({
 lspconfig["jdtls"].setup({
 	cmd = { "jdtls" },
 	filetypes = { "java" },
+	on_attach = on_attach,
+	capabilities = capabilities,
 	root_dir = lspconfig_util.root_pattern(
 		".git",
 		"build.gradle",
