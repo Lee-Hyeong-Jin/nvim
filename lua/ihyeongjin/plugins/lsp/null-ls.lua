@@ -13,7 +13,11 @@ null_ls.setup({
 		formatting.prettier,
 		formatting.stylua,
 		formatting.autopep8,
-		diagnostics.eslint_d,
+		diagnostics.eslint_d.with({
+			condition = function(utils)
+				return utils.root_has_file(".eslintrc.js")
+			end,
+		}),
 	},
 	-- configure format on save
 	on_attach = function(current_client, bufnr)
