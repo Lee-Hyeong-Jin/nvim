@@ -3,7 +3,7 @@ if not status then
 	return
 end
 
-local lualine_kanagawa = require("lualine.themes.kanagawa")
+local lualine_kanagawa = require("lualine.themes.auto")
 
 local new_colors = {
 	blue = "#A3D4D5",
