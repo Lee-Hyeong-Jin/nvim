@@ -15,40 +15,44 @@ end
 
 local keymap = vim.keymap
 
--- enable keybinds for available lsp server
+-- LSP 연결 시 키맵 설정
 local on_attach = function(client, bufnr)
 	local opts = { noremap = true, silent = true, buffer = bufnr }
 
-	-- set keybinds
-	keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", opts) -- show definition, references
-	keymap.set("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts) -- got to declaration
-	keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts) -- see definition and make edits in window
-	keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts) -- go to implementation
-	keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opts) -- see available code actions
-	keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opts) -- smart rename
-	keymap.set("n", "<leader>D", "<cmd>Lspsaga show_line_diagnostics<CR>", opts) -- show  diagnostics for line
-	keymap.set("n", "<leader>d", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts) -- show diagnostics for cursor
-	keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts) -- jump to previous diagnostic in buffer
-	keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts) -- jump to next diagnostic in buffer
-	keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts) -- show documentation for what is under cursor
-	keymap.set("n", "<leader>o", "<cmd>LSoutlineToggle<CR>", opts) -- see outline on right hand side
+	-- lspsaga 관련 키맵
+	keymap.set("n", "gf", "<cmd>Lspsaga finder<CR>", opts) -- 정의, 참조 보기
+	keymap.set("n", "gD", "<Cmd>Lspsaga goto_definition<CR>", opts) -- 선언으로 이동
+	keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts) -- 정의 미리보기
+	keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts) -- 구현으로 이동
+	keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opts) -- 코드 액션 보기
+	keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opts) -- 이름 바꾸기
+	keymap.set("n", "<leader>D", "<cmd>lua vim.diagnostic.open_float(nil, { focus = false })<CR>", opts) -- 현재 줄 진단 보기
+	keymap.set(
+		"n",
+		"<leader>d",
+		'<cmd>lua vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })<CR>',
+		opts
+	) -- 커서 위치 진단 보기
+	keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts) -- 이전 진단으로 점프
+	keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts) -- 다음 진단으로 점프
+	keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts) -- 커서 아래 문서 보기
+	keymap.set("n", "<leader>o", "<cmd>Lspsaga outline<CR>", opts) -- 아웃라인 보기
+	keymap.set("n", "<leader>tt", "<cmd>Lspsaga term_toggle<CR>", opts)
 
-	-- typescript specific keymaps (e.g. rename file and update imports)
+	-- TypeScript 전용 키맵
 	if client.name == "ts_ls" then
-		keymap.set("n", "<leader>rf", ":TypescriptRenameFile<CR>") -- rename file and update imports
-		keymap.set("n", "<leader>oi", ":TypescriptOrganizeImports<CR>") -- organize imports (not in youtube nvim video)
-		keymap.set("n", "<leader>ru", ":TypescriptRemoveUnused<CR>") -- remove unused variables (not in youtube nvim video)
+		keymap.set("n", "<leader>rf", ":TypescriptRenameFile<CR>", opts) -- 파일 이름 변경 및 import 업데이트
+		keymap.set("n", "<leader>oi", ":TypescriptOrganizeImports<CR>", opts) -- import 정리
+		keymap.set("n", "<leader>ru", ":TypescriptRemoveUnused<CR>", opts) -- 사용하지 않는 변수 제거
 	end
 end
 
--- used to enable autocompletion (assign to every lsp server config)
+-- 자동 완성을 위한 capabilities 설정
 local capabilities = cmp_nvim_lsp.default_capabilities()
 
 lspconfig.ts_ls.setup({
-	server = {
-		capabilities = capabilities,
-		on_attach = on_attach,
-	},
+	capabilities = capabilities,
+	on_attach = on_attach,
 })
 
 lspconfig["html"].setup({
@@ -87,19 +91,13 @@ lspconfig["rust_analyzer"].setup({
 	settings = {
 		["rust-analyzer"] = {
 			imports = {
-				granularity = {
-					group = "module",
-				},
+				granularity = { group = "module" },
 				prefix = "self",
 			},
 			cargo = {
-				buildScripts = {
-					enable = true,
-				},
+				buildScripts = { enable = true },
 			},
-			procMacro = {
-				enable = true,
-			},
+			procMacro = { enable = true },
 		},
 	},
 })
@@ -109,9 +107,7 @@ lspconfig["pyright"].setup({
 	capabilities = capabilities,
 	settings = {
 		python = {
-			analysis = {
-				typeCheckingMode = "off",
-			},
+			analysis = { typeCheckingMode = "off" },
 		},
 	},
 })
@@ -121,6 +117,7 @@ lspconfig["sqlls"].setup({
 	on_attach = on_attach,
 })
 
+-- C/C++: clangd 설정 (offsetEncoding 설정 포함)
 local capabilities_cpp = capabilities
 capabilities_cpp.offsetEncoding = { "utf-16" }
 lspconfig["clangd"].setup({
@@ -138,9 +135,7 @@ lspconfig["lua_ls"].setup({
 	on_attach = on_attach,
 	settings = {
 		Lua = {
-			diagnostics = {
-				globals = { "vim" },
-			},
+			diagnostics = { globals = { "vim" } },
 			workspace = {
 				library = {
 					[vim.fn.expand("$VIMRUNTIME/lua")] = true,

@@ -10,7 +10,7 @@ local ensure_packer = function()
 end
 local packer_bootstrap = ensure_packer()
 
--- Autocommand that reloads neovim whenever you save this file
+-- 플러그인 파일 저장 시 자동으로 PackerSync 실행
 vim.cmd([[
   augroup packer_user_config
     autocmd!
@@ -26,77 +26,80 @@ end
 return packer.startup(function(use)
 	use("wbthomason/packer.nvim")
 
-	-- use("rebelot/kanagawa.nvim")
-	-- use("wojciechkepka/vim-github-dark")
+	-- 테마 (원하는 테마 사용)
 	use("ellisonleao/gruvbox.nvim")
 
-	-- lua functions that many plugins use
+	-- Lua 관련 함수 모음
 	use("nvim-lua/plenary.nvim")
 
-	-- tmux $ split window navigation
+	-- tmux & split window 네비게이션
 	use("christoomey/vim-tmux-navigator")
 
 	use("szw/vim-maximizer")
 
-	-- essential plugins
+	-- 기본 플러그인들
 	use("tpope/vim-surround")
 	use("vim-scripts/ReplaceWithRegister")
 
-	-- commenting with gc
+	-- 주석 토글
 	use("numToStr/Comment.nvim")
 
-	-- file explorer
+	-- 파일 탐색기
 	use("nvim-tree/nvim-tree.lua")
 
-	-- icons
+	-- 아이콘
 	use("kyazdani42/nvim-web-devicons")
 
-	-- statusline
+	-- 상태줄
 	use("nvim-lualine/lualine.nvim")
 
-	-- fuzzy finding
+	-- 퍼지(fuzzy) 찾기
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" })
 	use({ "nvim-telescope/telescope-file-browser.nvim" })
 
-	-- autocompletion
+	-- 자동 완성
 	use("hrsh7th/nvim-cmp")
 	use("hrsh7th/cmp-buffer")
 	use("hrsh7th/cmp-path")
 
-	-- snippets
+	-- 스니펫
 	use("L3MON4D3/LuaSnip")
 	use("saadparwaiz1/cmp_luasnip")
 	use("rafamadriz/friendly-snippets")
 
-	-- managing & installing lsp servers, linters & formatters
+	-- LSP, Linter, Formatter 설치 및 관리
 	use("williamboman/mason.nvim")
 	use("williamboman/mason-lspconfig.nvim")
 	use("williamboman/nvim-lsp-installer")
 
-	-- configuring lsp servers
+	-- LSP 설정
 	use("neovim/nvim-lspconfig")
-	use("hrsh7th/cmp-nvim-lsp") -- for autocompletion
-	use("jose-elias-alvarez/typescript.nvim") -- additional functionality for typescript server (e.g. rename file & update imports)
-	use("onsails/lspkind.nvim") -- vs-code like icons for autocompletion
+	use("hrsh7th/cmp-nvim-lsp") -- 자동 완성용 LSP 소스
+	use("jose-elias-alvarez/typescript.nvim") -- typescript 서버 추가 기능
+	use("onsails/lspkind.nvim") -- 자동 완성에 VSCode 스타일 아이콘
 
-	-- formatting & linting
+	-- 포맷팅 및 린팅
 	use("jose-elias-alvarez/null-ls.nvim")
 	use("jayp0521/mason-null-ls.nvim")
+
+	-- 최신 lspsaga 플러그인 (업데이트된 버전)
 	use({
-		"glepnir/lspsaga.nvim",
-		branch = "main",
+		"nvimdev/lspsaga.nvim",
+		after = "nvim-lspconfig",
 		config = function()
-			require("lspsaga").setup({})
+			require("lspsaga").setup({
+				diagnostic = {
+					max_height = 0.8,
+					keys = {
+						quit = { "q", "<ESC>" },
+					},
+				},
+			})
 		end,
-		requires = {
-			{ "nvim-tree/nvim-web-devicons" },
-			--Please make sure you install markdown and markdown_inline parser
-			{ "nvim-treesitter/nvim-treesitter" },
-		},
 	})
 
-	-- treesitter
+	-- Treesitter 구문 분석
 	use({
 		"nvim-treesitter/nvim-treesitter",
 		run = function()
@@ -104,31 +107,31 @@ return packer.startup(function(use)
 		end,
 	})
 
-	-- auto closing
+	-- 자동 괄호 완성 및 태그 닫기
 	use("windwp/nvim-autopairs")
 	use("windwp/nvim-ts-autotag")
 
-	-- git signs plugin
+	-- Git 상태 표시
 	use("lewis6991/gitsigns.nvim")
 
-	-- dashboard
+	-- 대시보드
 	use({
 		"glepnir/dashboard-nvim",
 		event = "VimEnter",
 		config = function()
 			require("dashboard").setup({
-				-- config
+				-- 대시보드 설정 (원하는대로 수정)
 			})
 		end,
 		requires = { "nvim-tree/nvim-web-devicons" },
 	})
 
-	-- flutter setup
+	-- Flutter 개발 도구
 	use({
 		"akinsho/flutter-tools.nvim",
 		requires = {
 			"nvim-lua/plenary.nvim",
-			"stevearc/dressing.nvim", -- optional for vim.ui.select
+			"stevearc/dressing.nvim", -- 선택 UI 개선 (선택사항)
 		},
 	})
 
