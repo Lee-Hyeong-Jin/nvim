@@ -1,3 +1,25 @@
+-- ====================================================================
+-- floating preview 창에 'q'를 눌러 닫기 위한 오버라이드 코드
+-- ====================================================================
+local orig_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+	opts = opts or {}
+	-- 원하는 border 모양을 지정 (없으면 기본값 사용)
+	opts.border = opts.border or "rounded"
+	local bufnr, winid = orig_open_floating_preview(contents, syntax, opts, ...)
+	-- 생성된 floating 창의 버퍼에 'q' 키 매핑 추가
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<cmd>close<CR>", { noremap = true, silent = true })
+	-- opts.focus 값이 true면 커서 포커스를 해당 창으로 옮깁니다.
+	if opts.focus then
+		vim.api.nvim_set_current_win(winid)
+	end
+	return bufnr, winid
+end
+
+-- ====================================================================
+-- 아래는 기존 LSP 설정 코드입니다.
+-- ====================================================================
+
 local lspconfig_status, lspconfig = pcall(require, "lspconfig")
 if not lspconfig_status then
 	return
@@ -26,11 +48,11 @@ local on_attach = function(client, bufnr)
 	keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts) -- 구현으로 이동
 	keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opts) -- 코드 액션 보기
 	keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opts) -- 이름 바꾸기
-	keymap.set("n", "<leader>D", "<cmd>lua vim.diagnostic.open_float(nil, { focus = false })<CR>", opts) -- 현재 줄 진단 보기
+	keymap.set("n", "<leader>D", "<cmd>lua vim.diagnostic.open_float(nil, { focus = true })<CR>", opts) -- 현재 줄 진단 보기
 	keymap.set(
 		"n",
 		"<leader>d",
-		'<cmd>lua vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })<CR>',
+		'<cmd>lua vim.diagnostic.open_float(nil, { focus = true, scope = "cursor" })<CR>',
 		opts
 	) -- 커서 위치 진단 보기
 	keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts) -- 이전 진단으로 점프
